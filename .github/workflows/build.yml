@@ -3,19 +3,29 @@ name: Build CYD Headless
 on:
   workflow_dispatch:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build with PlatformIO
-        uses: n-vr/platformio-action@v1
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
-          command: run
+          python-version: "3.11"
+
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install platformio
+
+      - name: Build firmware
+        run: pio run -e cyd_2432s028
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
