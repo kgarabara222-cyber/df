@@ -1,1 +1,27 @@
+name: Build CYD Headless
 
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build with PlatformIO
+        uses: n-vr/platformio-action@v1
+        with:
+          command: run
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyd-headless-firmware
+          path: |
+            .pio/build/cyd_2432s028/firmware.bin
+            .pio/build/cyd_2432s028/bootloader.bin
+            .pio/build/cyd_2432s028/partitions.bin
